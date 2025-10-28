@@ -30,6 +30,8 @@ void setup() {
 
   Serial.begin(115200);  //preferred transmission rate for Arduino UNO R4
   pinMode(ButtonPin, INPUT_PULLUP);
+  pinMode(LJoyStickYPin, INPUT);
+  pinMode(RJoyStickXPin, INPUT);
   // WifiSerial.begin("ssid_UPDATE_FOR_YOUR_GROUP", "password_UPDATE", WifiPortType::Receiver);
   WifiSerial.begin("ssid_PairAP_CBF66", "passwordAP_07654321", WifiPortType::Transmitter);
   //WifiSerial.begin("ssid_PairAP_CBF66", "passwordAP_07654321", WifiPortType::Emulator); // one board to rule them all debugging
