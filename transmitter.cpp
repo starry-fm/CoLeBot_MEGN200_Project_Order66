@@ -4,11 +4,7 @@ int ButtonPin = 10;
 
 int LJoyStickYPin = A0;
 int LcenteredJoystickY;
-int LJoyStickXPin = A1;
-int LcenteredJoystickX;
 
-int RJoyStickYPin = A4;
-int RcenteredJoystickY;
 int RJoyStickXPin = A1;
 int RcenteredJoystickX;
 
@@ -78,10 +74,7 @@ void loop() {
 
   LcenteredJoystickY = analogRead(LJoyStickYPin) - 512;
   data.LJoyStickYValue = LcenteredJoystickY;
-  LcenteredJoystickX = analogRead(LJoyStickXPin) - 512;
-  data.LJoyStickXValue = LcenteredJoystickX;
-  RcenteredJoystickY = analogRead(RJoyStickYPin) - 512;
-  data.RJoyStickYValue = RcenteredJoystickY;
+  
   RcenteredJoystickX = analogRead(RJoyStickXPin) - 512;
   data.RJoyStickXValue = RcenteredJoystickX;
 
