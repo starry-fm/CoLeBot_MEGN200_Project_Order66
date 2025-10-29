@@ -5,8 +5,8 @@ int ButtonPin = 10;
 int LJoyStickYPin = A0;
 int LcenteredJoystickY;
 
-int RJoyStickXPin = A1;
-int RcenteredJoystickX;
+int RJoyStickYPin = A1;
+int RcenteredJoystickY;
 
 // A structure, similar to our servo and stepper motors, but this one conatins variables to be transmitted
 // Any variable you want to transmit/recieve must be initalized in the DataPacket structure
@@ -16,7 +16,7 @@ struct DataPacket {
                     //YOU should wire up a simple resistor (220 ohm) circuit and manually probe it with a wire connected to A0
   int ButtonPressed;
   int LJoyStickYValue;
-  int RJoyStickXValue;
+  int RJoyStickYValue;
 
 
 } data;
@@ -31,7 +31,7 @@ void setup() {
   Serial.begin(115200);  //preferred transmission rate for Arduino UNO R4
   pinMode(ButtonPin, INPUT_PULLUP);
   pinMode(LJoyStickYPin, INPUT);
-  pinMode(RJoyStickXPin, INPUT);
+  pinMode(RJoyStickYPin, INPUT);
   // WifiSerial.begin("ssid_UPDATE_FOR_YOUR_GROUP", "password_UPDATE", WifiPortType::Receiver);
   WifiSerial.begin("ssid_PairAP_CBF66", "passwordAP_07654321", WifiPortType::Transmitter);
   //WifiSerial.begin("ssid_PairAP_CBF66", "passwordAP_07654321", WifiPortType::Emulator); // one board to rule them all debugging
@@ -77,8 +77,8 @@ void loop() {
   LcenteredJoystickY = analogRead(LJoyStickYPin) - 512;
   data.LJoyStickYValue = LcenteredJoystickY;
   
-  RcenteredJoystickX = analogRead(RJoyStickXPin) - 512;
-  data.RJoyStickXValue = RcenteredJoystickX;
+  RcenteredJoystickY = analogRead(RJoyStickYPin) - 512;
+  data.RJoyStickYValue = RcenteredJoystickY;
 
 
   
