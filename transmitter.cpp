@@ -1,6 +1,7 @@
 #include "WifiPort2.h"
 
-int ButtonPin = 10;
+int Button1Pin = 2;
+int Button2Pin = 3;
 
 int LJoyStickYPin = A0;
 int LcenteredJoystickY;
@@ -14,9 +15,11 @@ struct DataPacket {
 
   int AnalogCheck;  //an initial check to show successful transmission
                     //YOU should wire up a simple resistor (220 ohm) circuit and manually probe it with a wire connected to A0
-  int ButtonPressed;
   int LJoyStickYValue;
   int RJoyStickYValue;
+
+  int Button1Pressed;
+  int Button2Pressed;
 
 
 } data;
@@ -29,7 +32,8 @@ void setup() {
   //DONT USE PIN13 FOR ANY SENSOR OR ACTUATORS
 
   Serial.begin(115200);  //preferred transmission rate for Arduino UNO R4
-  pinMode(ButtonPin, INPUT_PULLUP);
+  pinMode(Button1Pin, INPUT_PULLUP);
+  pinMode(Button2Pin, INPUT_PULLUP);
   pinMode(LJoyStickYPin, INPUT);
   pinMode(RJoyStickYPin, INPUT);
   // WifiSerial.begin("ssid_UPDATE_FOR_YOUR_GROUP", "password_UPDATE", WifiPortType::Receiver);
@@ -67,11 +71,18 @@ void loop() {
 
   }
 
-  if (digitalRead(ButtonPin) == LOW) {
-      data.ButtonPressed = true;
+  if (digitalRead(Button1Pin) == LOW) {
+      data.Button1Pressed = true;
   }
   else {
-    data.ButtonPressed = false;
+    data.Button1Pressed = false;
+  }
+  
+  if (digitalRead(Button2Pin) == LOW) {
+      data.Button2Pressed = true;
+  }
+  else {
+    data.Button1Pressed = false;
   }
 
   LcenteredJoystickY = analogRead(LJoyStickYPin) - 512;
