@@ -2,6 +2,7 @@
 
 int Button1Pin = 2;
 int Button2Pin = 3;
+int Button3Pin = 4;
 
 int LJoyStickYPin = A0;
 int LcenteredJoystickY;
@@ -20,6 +21,7 @@ struct DataPacket {
 
   int Button1Pressed;
   int Button2Pressed;
+  int Button3Pressed;
 
 
 } data;
@@ -34,6 +36,7 @@ void setup() {
   Serial.begin(115200);  //preferred transmission rate for Arduino UNO R4
   pinMode(Button1Pin, INPUT_PULLUP);
   pinMode(Button2Pin, INPUT_PULLUP);
+  pinMode(Button3Pin, INPUT_PULLUP);
   pinMode(LJoyStickYPin, INPUT);
   pinMode(RJoyStickYPin, INPUT);
   // WifiSerial.begin("ssid_UPDATE_FOR_YOUR_GROUP", "password_UPDATE", WifiPortType::Receiver);
@@ -71,25 +74,23 @@ void loop() {
 
   }
 
-  if (digitalRead(Button1Pin) == LOW) {
-      data.Button1Pressed = true;
-  }
-  else {
-    data.Button1Pressed = false;
-  }
-  
-  if (digitalRead(Button2Pin) == LOW) {
-      data.Button2Pressed = true;
-  }
-  else {
-    data.Button1Pressed = false;
-  }
+ // Read buttons
+data.Button1Pressed = (digitalRead(Button1Pin) == LOW);
+data.Button2Pressed = (digitalRead(Button2Pin) == LOW);
+data.Button3Pressed = (digitalRead(Button3Pin) == LOW);
 
-  LcenteredJoystickY = analogRead(LJoyStickYPin) - 512;
-  data.LJoyStickYValue = LcenteredJoystickY;
-  
-  RcenteredJoystickY = analogRead(RJoyStickYPin) - 512;
-  data.RJoyStickYValue = RcenteredJoystickY;
+// Read joysticks
+data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512;
+data.RJoyStickYValue = analogRead(RJoyStickYPin) - 512;
+
+if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) {
+  Serial.print("Buttons: B1=");
+  Serial.print(data.Button1Pressed);
+  Serial.print(" B2=");
+  Serial.print(data.Button2Pressed);
+  Serial.print(" B3=");
+  Serial.println(data.Button3Pressed);
+}
 
 
   
