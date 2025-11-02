@@ -1,8 +1,8 @@
 #include "WifiPort2.h"
 
-int Button1Pin = 2;
-int Button2Pin = 3;
-int Button3Pin = 4;
+int button1Pin = 2;
+int button2Pin = 3;
+int button3Pin = 4;
 
 int LJoyStickYPin = A0;
 int LcenteredJoystickY;
