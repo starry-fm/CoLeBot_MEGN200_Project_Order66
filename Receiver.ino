@@ -1,6 +1,6 @@
 #include "WifiPort2.h"
 #include <Servo.h>
-struct DataPacket {
+struct DataPacket { //Transmitter sent data setup
   int AnalogCheck;
   int LJoyStickYValue;
   int RJoyStickYValue;
@@ -9,7 +9,7 @@ struct DataPacket {
   int Button2Pressed;
   int Button3Pressed;
 
-  int Joy1Button; //Transmitter sent data setup
+  int Joy1Button; 
 } data;
 const int enable = 6; //DC motor pin setup
 const int dir1 = 5;
