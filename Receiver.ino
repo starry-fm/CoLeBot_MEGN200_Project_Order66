@@ -8,20 +8,22 @@ struct DataPacket {
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;
+
+  int Joy1Button; //Transmitter sent data setup
 } data;
-int enable = 5;
-int dir1 = 4;
-int dir2 = 3;
-int enable2 = 11;
-int dir2A = 10;
-int dir2B = 9;
+const int enable = 6; //DC motor pin setup
+const int dir1 = 5;
+const int dir2 = 7;
+const int enable2 = 3;
+const int dir2A = 2;
+const int dir2B = 4;
 
 Servo servo1;
 Servo servo2;
-int servo1Pin = 2;  
-int servo2Pin = 12;
+const int servo1Pin = A0;  //Servo motor setup
+const int servo2Pin = A1;
 
-int servo1Angle = 65;  
+int servo1Angle = 80;  //inital conditions for arm/claw
 bool servo2Position = false;
 int lastButton2State = 0;
 
@@ -30,15 +32,15 @@ void setup() {
   Serial.begin(115200);
   WifiSerial.begin("ssid_PairAP_CBF66", "passwordAP_07654321", WifiPortType::Receiver);
 
-  pinMode(enable, OUTPUT);
-  pinMode(dir1, OUTPUT);
-  pinMode(dir2, OUTPUT);
-  pinMode(enable2, OUTPUT);
+  pinMode(enable, OUTPUT); //Motor 1 PWM and directions
+  pinMode(dir1, OUTPUT); 
+  pinMode(dir2, OUTPUT); 
+  pinMode(enable2, OUTPUT); //motor 2 PWM and directions
   pinMode(dir2A, OUTPUT);
   pinMode(dir2B, OUTPUT);
 
-  servo1.attach(servo1Pin);
-  servo2.attach(servo2Pin);
+  servo1.attach(servo1Pin); //arm servo
+  servo2.attach(servo2Pin); //claw servo
   
   servo1.write(servo1Angle);
   servo2.write(0);
@@ -57,14 +59,15 @@ void loop() {
   if ((WifiSerial.getPortType() == WifiPortType::Receiver || WifiSerial.getPortType() == WifiPortType::Emulator) && WifiSerial.checkForData()) {
     data = WifiSerial.getData();
 
-    int joystick_value1 = data.RJoyStickYValue;
+    int joystick_value1 = data.RJoyStickYValue; //Use data from transmitter for joystick values
     int joystick_value2 = data.LJoyStickYValue;
     int deadzone = 25;
     int center = -5;
     int center2 = 9;
 
+  //motor 1 control
     if (abs(joystick_value1 - center) < deadzone) {
-      // In deadzone - stop motor
+      // In deadzone, stop motor
       digitalWrite(dir1, LOW);
       digitalWrite(dir2, LOW);
       analogWrite(enable, 0);
@@ -83,7 +86,7 @@ void loop() {
     }
     // Motor 2 control
     if (abs(joystick_value2 - center2) < deadzone) {
-      // In deadzone - stop motor
+      // In deadzone, stop motor
       digitalWrite(dir2A, LOW);
       digitalWrite(dir2B, LOW);
       analogWrite(enable2, 0);
@@ -100,12 +103,13 @@ void loop() {
       digitalWrite(dir2B, HIGH);
       analogWrite(enable2, 255);
     }
+    //had issue with lack of power to DC motors, so scrapped map function to full power in desired direction
     
    
-    if (data.Button1Pressed) {
+    if (data.Button1Pressed) { //If button 1 pressed, go down until 56 degrees
       servo1Angle -= 5; 
-      if (servo1Angle < 20) {
-        servo1Angle = 20;  
+      if (servo1Angle < 56) { //Servo was going too low, so changed minimum arm value to 56 degrees
+        servo1Angle = 56;  
       }
       servo1.write(servo1Angle);
       Serial.print("Servo1 decremented to: ");
@@ -113,10 +117,10 @@ void loop() {
     }
 
 
-    if (data.Button3Pressed) {
+    if (data.Button3Pressed) { //if button 3 pressed, go up until 120
       servo1Angle += 5;  
-      if (servo1Angle > 110) {
-        servo1Angle = 110;  
+      if (servo1Angle > 120) {
+        servo1Angle = 120;  
       }
       servo1.write(servo1Angle);
       Serial.print("Servo1 incremented to: ");
@@ -124,14 +128,16 @@ void loop() {
     }
 
     // Button 2 - Servo 2 
-    if (data.Button2Pressed && !lastButton2State) {
+    if (data.Button2Pressed && !lastButton2State) { //if button 2 pressed, close, if pressed again, open
       servo2Position = !servo2Position;  
       if (servo2Position) {
-        servo2.write(45);
-        Serial.println("Servo2 to 45");
+        servo2.write(47);
+        Serial.println("Servo2 to 44"); //had issue where claw was not closing enough, so increased max servo degree slightly
+        delay(20);
       } else {
         servo2.write(0);
         Serial.println("Servo2 to 0");
+        delay(20);
       }
     }
     lastButton2State = data.Button2Pressed;
