@@ -1,10 +1,10 @@
 #include "WifiPort2.h"
 
-int Button1Pin = 2;
+int Button1Pin = 2; //assign buttons to digital pins
 int Button2Pin = 3;
 int Button3Pin = 4;
 
-int LJoyStickYPin = A0;
+int LJoyStickYPin = A0; //assign joysticks to analog pins
 int LcenteredJoystickY;
 
 int RJoyStickYPin = A1;
@@ -16,7 +16,7 @@ struct DataPacket {
 
   int AnalogCheck;  //an initial check to show successful transmission
                     //YOU should wire up a simple resistor (220 ohm) circuit and manually probe it with a wire connected to A0
-  int LJoyStickYValue;
+  int LJoyStickYValue; //create variables for data packet which communciate input values to the receiver
   int RJoyStickYValue;
 
   int Button1Pressed;
@@ -75,15 +75,15 @@ void loop() {
   }
 
  // Read buttons
-data.Button1Pressed = (digitalRead(Button1Pin) == LOW);
+data.Button1Pressed = (digitalRead(Button1Pin) == LOW); //update data packet to tell receiver if buttons are pressed or not. If button is pressed, variable updated to true
 data.Button2Pressed = (digitalRead(Button2Pin) == LOW);
 data.Button3Pressed = (digitalRead(Button3Pin) == LOW);
 
 // Read joysticks
-data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512;
+data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512; //update data packet to tell receiver what the values of the joysticks are, setting the center to zero and extremes to +/- 512
 data.RJoyStickYValue = analogRead(RJoyStickYPin) - 512;
 
-if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) {
+if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) { //button debugging
   Serial.print("Buttons: B1=");
   Serial.print(data.Button1Pressed);
   Serial.print(" B2=");
