@@ -22,7 +22,7 @@ struct DataPacket {
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;
-
+  int RJoyButtonPressed;
 
 } data;
 
@@ -82,6 +82,7 @@ data.Button3Pressed = (digitalRead(Button3Pin) == LOW);
 // Read joysticks
 data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512;
 data.RJoyStickYValue = analogRead(RJoyStickYPin) - 512;
+data.RJoyButtonPressed = digitalRead(R_JOY_BUTTON_PIN);
 
 if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) {
   Serial.print("Buttons: B1=");

@@ -8,6 +8,7 @@ struct DataPacket {
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;
+  int RJoyButtonPressed;
 } data;
 int enable = 5;
 int dir1 = 4;
@@ -45,6 +46,43 @@ void setup() {
   
   
 }
+
+void roboAutonomous() {
+  Serial.println("Autonomous mode active");
+  unsigned long startTime = millis();
+  const unsigned long duration = 10000; // 10 seconds
+
+  while (millis() - startTime < duration) {
+    // rotate forward
+    digitalWrite(dir1, HIGH);
+    digitalWrite(dir2, LOW);
+    analogWrite(enable, 200);
+    delay(800);
+
+    // rotate backward
+    digitalWrite(dir1, LOW);
+    digitalWrite(dir2, HIGH);
+    analogWrite(enable, 200);
+    delay(800);
+
+    // raise arm
+    servo1.write(120);
+    delay(600);
+
+    // lower arm
+    servo1.write(55);
+    delay(600);
+  }
+
+  // stop motors after loop
+  digitalWrite(dir1, LOW);
+  digitalWrite(dir2, LOW);
+  analogWrite(enable, 0);
+  Serial.println("Autonomous mode complete");
+}
+
+
+
 void loop() {
   if (WifiSerial.getPortType() == WifiPortType::Transmitter || WifiSerial.getPortType() == WifiPortType::Emulator) {
     WifiSerial.autoReconnect();
@@ -104,8 +142,8 @@ void loop() {
    
     if (data.Button1Pressed) {
       servo1Angle -= 5; 
-      if (servo1Angle < 20) {
-        servo1Angle = 20;  
+      if (servo1Angle < 55) {
+        servo1Angle = 55;  
       }
       servo1.write(servo1Angle);
       Serial.print("Servo1 decremented to: ");
@@ -115,8 +153,8 @@ void loop() {
 
     if (data.Button3Pressed) {
       servo1Angle += 5;  
-      if (servo1Angle > 110) {
-        servo1Angle = 110;  
+      if (servo1Angle > 120) {
+        servo1Angle = 120;  
       }
       servo1.write(servo1Angle);
       Serial.print("Servo1 incremented to: ");
@@ -149,5 +187,9 @@ void loop() {
     Serial.println(data.Button3Pressed);
 
     delay(10);
+  }
+
+  if (data.RJoyButtonPressed) {
+  roboAutonomous();
   }
 }
