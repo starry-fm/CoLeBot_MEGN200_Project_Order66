@@ -8,7 +8,7 @@ struct DataPacket { //Transmitter sent data setup
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;
-  int RJoyButtonPressed
+  int RJoyButtonPressed;
 } data;
 const int enable = 6; //DC motor pin setup
 const int dir1 = 5;
@@ -79,7 +79,7 @@ void roboAutonomous() {
           break;
 
         case 3: // lower arm
-          servo1.write(55);
+          servo1.write(75);
           break;
       }
 
@@ -158,8 +158,8 @@ void loop() {
    
     if (data.Button1Pressed) { //If button 1 pressed, go down until 56 degrees
       servo1Angle -= 5; 
-      if (servo1Angle < 20) {
-        servo1Angle = 20;  
+      if (servo1Angle < 55) {
+        servo1Angle = 55;  
       }
       servo1.write(servo1Angle);
       Serial.print("Servo1 decremented to: ");
@@ -181,8 +181,8 @@ void loop() {
     if (data.Button2Pressed && !lastButton2State) { //if button 2 pressed, close, if pressed again, open
       servo2Position = !servo2Position;  
       if (servo2Position) {
-        servo2.write(47);
-        Serial.println("Servo2 to 44"); //had issue where claw was not closing enough, so increased max servo degree slightly
+        servo2.write(85);
+        Serial.println("Servo2 to 85"); //had issue where claw was not closing enough, so increased max servo degree slightly
         delay(20);
       } else {
         servo2.write(0);
