@@ -21,8 +21,6 @@ struct DataPacket {
   int LJoyStickYValue; //create variables for data packet which communciate input values to the receiver
   int RJoyStickYValue;
 
-  int JoyStickButtonPressed;
-
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;

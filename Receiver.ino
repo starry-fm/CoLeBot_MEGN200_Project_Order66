@@ -8,6 +8,7 @@ struct DataPacket { //Transmitter sent data setup
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;
+  int RJoyButtonPressed
 } data;
 const int enable = 6; //DC motor pin setup
 const int dir1 = 5;
