@@ -50,28 +50,41 @@ void setup() {
 void roboAutonomous() {
   Serial.println("Autonomous mode active");
   unsigned long startTime = millis();
-  const unsigned long duration = 10000; // 10 seconds
+  const unsigned long duration = 10000;
+
+  unsigned long prevTime = 0;
+  int state = 0;
 
   while (millis() - startTime < duration) {
-    // rotate forward
-    digitalWrite(dir1, HIGH);
-    digitalWrite(dir2, LOW);
-    analogWrite(enable, 200);
-    delay(800);
+    unsigned long now = millis();
 
-    // rotate backward
-    digitalWrite(dir1, LOW);
-    digitalWrite(dir2, HIGH);
-    analogWrite(enable, 200);
-    delay(800);
+    if (now - prevTime >= 800 && state < 4) {
+      prevTime = now;
 
-    // raise arm
-    servo1.write(120);
-    delay(600);
+      switch (state) {
+        case 0: // forward
+          digitalWrite(dir1, HIGH);
+          digitalWrite(dir2, LOW);
+          analogWrite(enable, 200);
+          break;
 
-    // lower arm
-    servo1.write(55);
-    delay(600);
+        case 1: // backward
+          digitalWrite(dir1, LOW);
+          digitalWrite(dir2, HIGH);
+          analogWrite(enable, 200);
+          break;
+
+        case 2: // raise arm
+          servo1.write(120);
+          break;
+
+        case 3: // lower arm
+          servo1.write(55);
+          break;
+      }
+
+      state = (state + 1) % 4; // cycle through states
+    }
   }
 
   // stop motors after loop
@@ -80,6 +93,7 @@ void roboAutonomous() {
   analogWrite(enable, 0);
   Serial.println("Autonomous mode complete");
 }
+
 
 
 
