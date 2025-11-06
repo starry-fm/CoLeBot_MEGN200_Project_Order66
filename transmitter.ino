@@ -1,14 +1,16 @@
 #include "WifiPort2.h"
 
-int Button1Pin = 2;
+int Button1Pin = 2; //assign buttons to digital pins
 int Button2Pin = 3;
 int Button3Pin = 4;
 
-int LJoyStickYPin = A0;
+int LJoyStickYPin = A0; //assign joysticks to analog pins
 int LcenteredJoystickY;
 
 int RJoyStickYPin = A1;
 int RcenteredJoystickY;
+
+int RJoyStickButton = 5;
 
 // A structure, similar to our servo and stepper motors, but this one conatins variables to be transmitted
 // Any variable you want to transmit/recieve must be initalized in the DataPacket structure
@@ -16,8 +18,10 @@ struct DataPacket {
 
   int AnalogCheck;  //an initial check to show successful transmission
                     //YOU should wire up a simple resistor (220 ohm) circuit and manually probe it with a wire connected to A0
-  int LJoyStickYValue;
+  int LJoyStickYValue; //create variables for data packet which communciate input values to the receiver
   int RJoyStickYValue;
+
+  int JoyStickButtonPressed;
 
   int Button1Pressed;
   int Button2Pressed;
@@ -37,6 +41,7 @@ void setup() {
   pinMode(Button1Pin, INPUT_PULLUP);
   pinMode(Button2Pin, INPUT_PULLUP);
   pinMode(Button3Pin, INPUT_PULLUP);
+  pinMode(RJoyStickButton, INPUT_PULLUP);
   pinMode(LJoyStickYPin, INPUT);
   pinMode(RJoyStickYPin, INPUT);
   // WifiSerial.begin("ssid_UPDATE_FOR_YOUR_GROUP", "password_UPDATE", WifiPortType::Receiver);
@@ -75,16 +80,17 @@ void loop() {
   }
 
  // Read buttons
-data.Button1Pressed = (digitalRead(Button1Pin) == LOW);
+data.Button1Pressed = (digitalRead(Button1Pin) == LOW); //update data packet to tell receiver if buttons are pressed or not. If button is pressed, variable updated to true
 data.Button2Pressed = (digitalRead(Button2Pin) == LOW);
 data.Button3Pressed = (digitalRead(Button3Pin) == LOW);
+data.JoyStickButtonPressed = (digitalRead(RJoyStickButton)==LOW);
 
 // Read joysticks
-data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512;
+data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512; //update data packet to tell receiver what the values of the joysticks are, setting the center to zero and extremes to +/- 512
 data.RJoyStickYValue = analogRead(RJoyStickYPin) - 512;
 data.RJoyButtonPressed = digitalRead(R_JOY_BUTTON_PIN);
 
-if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) {
+if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) { //button debugging
   Serial.print("Buttons: B1=");
   Serial.print(data.Button1Pressed);
   Serial.print(" B2=");
