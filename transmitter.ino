@@ -81,24 +81,26 @@ void loop() {
 data.Button1Pressed = (digitalRead(Button1Pin) == LOW); //update data packet to tell receiver if buttons are pressed or not. If button is pressed, variable updated to true
 data.Button2Pressed = (digitalRead(Button2Pin) == LOW);
 data.Button3Pressed = (digitalRead(Button3Pin) == LOW);
-data.JoyStickButtonPressed = (digitalRead(RJoyStickButton)==LOW);
+data.RJoyButtonPressed = (digitalRead(RJoyStickButton)==LOW);
 
 // Read joysticks
 data.LJoyStickYValue = analogRead(LJoyStickYPin) - 512; //update data packet to tell receiver what the values of the joysticks are, setting the center to zero and extremes to +/- 512
 data.RJoyStickYValue = analogRead(RJoyStickYPin) - 512;
-data.RJoyButtonPressed = digitalRead(R_JOY_BUTTON_PIN);
 
-if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed) { //button debugging
+
+if (data.Button1Pressed || data.Button2Pressed || data.Button3Pressed || data.RJoyButtonPressed) { //button debugging
   Serial.print("Buttons: B1=");
   Serial.print(data.Button1Pressed);
   Serial.print(" B2=");
   Serial.print(data.Button2Pressed);
   Serial.print(" B3=");
   Serial.println(data.Button3Pressed);
+  Serial.print(" JB=");
+  Serial.println(data.RJoyButtonPressed);
 }
 
 
   
 
-  delay(100); // update delay after you get it working to be a smaller number like 10ms to account for WiFi transmission overhead
+  delay(10);
 }
