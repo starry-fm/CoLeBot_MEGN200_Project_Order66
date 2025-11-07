@@ -8,7 +8,7 @@ struct DataPacket { //Transmitter sent data setup
   int Button1Pressed;
   int Button2Pressed;
   int Button3Pressed;
-  int RJoyButtonPressed
+  int RJoyButtonPressed;
 } data;
 const int enable = 6; //DC motor pin setup
 const int dir1 = 5;
@@ -50,28 +50,41 @@ void setup() {
 void roboAutonomous() {
   Serial.println("Autonomous mode active");
   unsigned long startTime = millis();
-  const unsigned long duration = 10000; // 10 seconds
+  const unsigned long duration = 10000;
+
+  unsigned long prevTime = 0;
+  int state = 0;
 
   while (millis() - startTime < duration) {
-    // rotate forward
-    digitalWrite(dir1, HIGH);
-    digitalWrite(dir2, LOW);
-    analogWrite(enable, 200);
-    delay(800);
+    unsigned long now = millis();
 
-    // rotate backward
-    digitalWrite(dir1, LOW);
-    digitalWrite(dir2, HIGH);
-    analogWrite(enable, 200);
-    delay(800);
+    if (now - prevTime >= 800 && state < 4) {
+      prevTime = now;
 
-    // raise arm
-    servo1.write(120);
-    delay(600);
+      switch (state) {
+        case 0: // forward
+          digitalWrite(dir1, HIGH);
+          digitalWrite(dir2, LOW);
+          analogWrite(enable, 200);
+          break;
 
-    // lower arm
-    servo1.write(55);
-    delay(600);
+        case 1: // backward
+          digitalWrite(dir1, LOW);
+          digitalWrite(dir2, HIGH);
+          analogWrite(enable, 200);
+          break;
+
+        case 2: // raise arm
+          servo1.write(120);
+          break;
+
+        case 3: // lower arm
+          servo1.write(75);
+          break;
+      }
+
+      state = (state + 1) % 4; // cycle through states
+    }
   }
 
   // stop motors after loop
@@ -80,6 +93,7 @@ void roboAutonomous() {
   analogWrite(enable, 0);
   Serial.println("Autonomous mode complete");
 }
+
 
 
 
@@ -144,8 +158,8 @@ void loop() {
    
     if (data.Button1Pressed) { //If button 1 pressed, go down until 56 degrees
       servo1Angle -= 5; 
-      if (servo1Angle < 20) {
-        servo1Angle = 20;  
+      if (servo1Angle < 55) {
+        servo1Angle = 55;  
       }
       servo1.write(servo1Angle);
       Serial.print("Servo1 decremented to: ");
@@ -167,8 +181,8 @@ void loop() {
     if (data.Button2Pressed && !lastButton2State) { //if button 2 pressed, close, if pressed again, open
       servo2Position = !servo2Position;  
       if (servo2Position) {
-        servo2.write(47);
-        Serial.println("Servo2 to 44"); //had issue where claw was not closing enough, so increased max servo degree slightly
+        servo2.write(85);
+        Serial.println("Servo2 to 85"); //had issue where claw was not closing enough, so increased max servo degree slightly
         delay(20);
       } else {
         servo2.write(0);
